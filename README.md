@@ -1,6 +1,6 @@
 # Speer
 
-Hello world in c+++
+Hello world in c++
 
 plz use linux
 

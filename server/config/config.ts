@@ -1,6 +1,6 @@
 const SERVER_NODE_NAME = process.env.SERVER_NODE_NAME || ''
 
-const configuration = [
+export const globalConfig = [
     {
         name: 'error',
         url: '',
@@ -22,11 +22,11 @@ const configuration = [
 
 const readServerConfig = () => {
     console.log(`Reading configuration for server node: ${SERVER_NODE_NAME}`)
-    const info = configuration.find(c => c.name === SERVER_NODE_NAME);
-    return info || configuration[0];
+    const info = globalConfig.find(c => c.name === SERVER_NODE_NAME);
+    return info || globalConfig[0];
 }
 
-const config = readServerConfig()
-export default config
+export const config = readServerConfig()
+
 
 

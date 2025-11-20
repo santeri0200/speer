@@ -1,12 +1,4 @@
 services:
-  client:
-    build:
-      context: ./client
-      dockerfile: Containerfile
-    container_name: speer-client
-    ports:
-      - "3000:3000"
-    restart: always
   server-0:
     build:
       context: ./server

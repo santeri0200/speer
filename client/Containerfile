@@ -1,0 +1,19 @@
+
+FROM docker.io/node:24-alpine
+
+ENV TZ="Europe/Helsinki"
+
+WORKDIR /opt/app-root/src
+
+ARG CI
+ENV CI=$CI
+
+COPY package* ./
+RUN npm ci --omit-dev --ignore-scripts --no-audit --no-fund
+COPY . .
+
+RUN npm ci
+
+EXPOSE 3000
+
+CMD ["npm", "start"]

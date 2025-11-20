@@ -1,12 +1,16 @@
 services:
   client:
-    build: ./client
+    build:
+      context: ./client
+      dockerfile: Containerfile
     container_name: client-speer
     ports:
       - "3000:3000"
     restart: always
   server:
-    build: ./server
+    build:
+      context: ./client
+      dockerfile: Containerfile
     container_name: server-speer
     ports:
       - "8000:8000"

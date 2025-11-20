@@ -1,6 +1,8 @@
+import type { ServerConfig }  from "../types.ts";
+
 const SERVER_NODE_NAME = process.env.SERVER_NODE_NAME || ''
 
-export const globalConfig = [
+export const globalConfig: ServerConfig[] = [
     {
         name: 'error',
         url: '',
@@ -20,7 +22,7 @@ export const globalConfig = [
 ]
 
 
-const readServerConfig = () => {
+const readServerConfig = (): ServerConfig => {
     console.log(`Reading configuration for server node: ${SERVER_NODE_NAME}`)
     const info = globalConfig.find(c => c.name === SERVER_NODE_NAME);
     return info || globalConfig[0];

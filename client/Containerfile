@@ -9,7 +9,7 @@ ARG CI
 ENV CI=$CI
 
 COPY package* ./
-RUN npm ci --omit-dev --ignore-scripts --no-audit --no-fund
+RUN npm ci
 COPY . .
 
 RUN npm ci

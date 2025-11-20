@@ -3,16 +3,38 @@ services:
     build:
       context: ./client
       dockerfile: Containerfile
-    container_name: client-speer
+    container_name: speer-client
     ports:
       - "3000:3000"
     restart: always
-  server:
+  server-0:
     build:
-      context: ./client
+      context: ./server
       dockerfile: Containerfile
-    container_name: server-speer
+    container_name: speer-server-0
+    environment:
+      SERVER_NODE_NAME: 'speer-server-0'
     ports:
       - "8000:8000"
+    restart: always
+  server-1:
+    build:
+      context: ./server
+      dockerfile: Containerfile
+    container_name: speer-server-1
+    environment:
+      SERVER_NODE_NAME: 'speer-server-1'
+    ports:
+      - "8001:8000"
+    restart: always
+  server-2:
+    build:
+      context: ./server
+      dockerfile: Containerfile
+    container_name: speer-server-2
+    environment:
+      SERVER_NODE_NAME: 'speer-server-2'
+    ports:
+      - "8002:8000"
     restart: always
 

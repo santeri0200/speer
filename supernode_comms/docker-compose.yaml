@@ -1,0 +1,32 @@
+services:
+  server-0:
+    build:
+      context: .
+      dockerfile: Containerfile
+    container_name: speer-server-0
+    environment:
+      SERVER_NODE_NAME: 'speer-server-0'
+    ports:
+      - "8000:8000"
+    restart: "no"
+  server-1:
+    build:
+      context: .
+      dockerfile: Containerfile
+    container_name: speer-server-1
+    environment:
+      SERVER_NODE_NAME: 'speer-server-1'
+    ports:
+      - "8001:8000"
+    restart: "no"
+  server-2:
+    build:
+      context: .
+      dockerfile: Containerfile
+    container_name: speer-server-2
+    environment:
+      SERVER_NODE_NAME: 'speer-server-2'
+    ports:
+      - "8002:8000"
+    restart: "no"
+

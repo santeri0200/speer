@@ -13,9 +13,6 @@
 import {config, globalConfig} from './config/config.ts'
 import { WebSocketServer } from "ws";
 
-let randomSleep = 0
-
-
 
 interface ClientConnection{
   connectedToSupernodeAdress: string;

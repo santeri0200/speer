@@ -1,5 +1,5 @@
 /**
- * 
+ *  NOTE: docker compose networking settings sometimes are quite tricky, try both 8000 or 800{node number} if things wont work. 
  * 
  *  Supernodes ask each other every 60 seconds about information of connected clients in order to share information.
  *  The message name is GET_KNOWN_CLIENTS

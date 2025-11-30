@@ -1,7 +1,9 @@
 /**
  *  NOTE: docker compose networking settings sometimes are quite tricky, try both 8000 or 800{node number} if things wont work. 
  * 
- *  Supernodes ask each other every 60 seconds about information of connected clients in order to share information.
+ *  Supernodes ask each other at random itervals about information of connected clients in order to share information.
+ *  random because it is little bit easier to read when all nodes arent talking at the same time from the logs
+ * 
  *  The message name is GET_KNOWN_CLIENTS
  *  
  *  The answer to the message is a json of ClientConnection[]. the message starts with RESPONSE_GET_KNOWN_CLIENTS

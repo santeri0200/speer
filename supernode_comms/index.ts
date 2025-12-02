@@ -39,24 +39,25 @@ type Message = {
     body: ClientConnection[] | null,
 }
 
+//this is run whenn the supernode gets the GET_KNOWN_CLIENTS message
+const handleRespondToGetKnownClients = (ws, req, parsedMessage) => {
+    console.log(`${config.name} is sending client info to ${req.socket.remoteAddress}`)
+    const response: Message = {
+        type: RESPONSE_GET_KNOWN_CLIENTS,
+        body: connectedClients
+    }
+    ws.send(JSON.stringify(response))
+}
 
-
-
-//gossip response 
+//gossip response loop edit handleResponseToGetKnownClients if you want to decide what the server does when it gets the GET_KNOWN_CLIENTS 
 const wss = new WebSocketServer({ port: 8000 });
 wss.on("connection", (ws, req) => {
     console.log(`${config.name} was connected from ${req.socket.remoteAddress}`);
     ws.on("message", (message) => {
         console.log(`Received: ${message}`);
         const parsedMessage = JSON.parse(message)
-
         if(parsedMessage['type'] === GET_KNOWN_CLIENTS) {
-            console.log(`${config.name} is sending client info to ${req.socket.remoteAddress}`)
-            const response: Message = {
-                type: RESPONSE_GET_KNOWN_CLIENTS,
-                body: connectedClients
-            }
-            ws.send(JSON.stringify(response))
+            handleRespondToGetKnownClients(ws, req, parsedMessage)
         }
     });
 

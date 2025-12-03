@@ -112,8 +112,7 @@ const createConnectionAndGossip = async (server, attempts, responseWaitTimeMs, o
     }
 }
 
-const startClientAdressGossip = async () => {
-    
+const startClientAddressGossip = async () => {
     await new Promise(resolve => setTimeout(resolve, randomBetween(0, 2000)));
     for(const server of globalConfig){
        createConnectionAndGossip(server, 3, 1000, (event, connection) => {
@@ -126,7 +125,7 @@ const startClientAdressGossip = async () => {
 
 setInterval(async () => {
     console.log(`--SERVER ${config.name} starting gossip--`)
-    await startClientAdressGossip()
+    await startClientAddressGossip()
     console.log(`--SERVER ${config.name} stopped gossip--`)
 }, randomBetween(5000, 10000))
 

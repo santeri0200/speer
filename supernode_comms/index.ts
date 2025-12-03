@@ -8,10 +8,6 @@
  *  
  *  The answer to the message is a json of ClientConnection[]. the message starts with RESPONSE_GET_KNOWN_CLIENTS
 */
-
-
-
-
 import {config, globalConfig} from './config/config.ts'
 import { WebSocketServer } from "ws";
 
@@ -58,18 +54,14 @@ wss.on("connection", (ws, req) => {
             handleRespondToGetKnownClients(ws, req, parsedMessage)
         }
     });
-
     ws.on("close", () => {
         console.log("supernode socket disconnected");
     });
 });
 
-
 const randomBetween = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-
 
 const createConnectionAndGossip = async (server, attempts, responseWaitTimeMs, onMessageFunc) => {
     let response = false
@@ -78,11 +70,9 @@ const createConnectionAndGossip = async (server, attempts, responseWaitTimeMs, o
             console.log(`${config.name} skipped  ${server.name}`)
             continue;
         }
-
         console.log(`${config.name} attempting to connect to ${server.name}`)
         try{
             const connection = new WebSocket(server.url)
-            
             connection.onopen = () => {
                 console.log(`${config.name} asking client info from ${connection.url}`)
                 const message = {
@@ -91,20 +81,16 @@ const createConnectionAndGossip = async (server, attempts, responseWaitTimeMs, o
                 }
                 connection.send(JSON.stringify(message))
             }
-
             connection.onmessage = (event) => {
                 onMessageFunc(event, connection)
                 response = true
                 connection.close()
             }
-
             connection.onclose = () => {
                 // cleanup? 
             }
-
             //timeout for the response to come back
             await new Promise(resolve => setTimeout(resolve, responseWaitTimeMs));
-
             connection.close()
             if(response){
                 break;
@@ -127,7 +113,6 @@ const startClientAddressGossip = async () => {
        })
     }
 }
-
 
 setInterval(async () => {
     console.log(`--SERVER ${config.name} starting gossip--`)

@@ -15,29 +15,24 @@
 import {config, globalConfig} from './config/config.ts'
 import { WebSocketServer } from "ws";
 
+import { StateManager } from './state-manager.ts';
+import type { Message, ClientConnection } from './types.ts';
 
-interface ClientConnection{
-  connectedToSupernodeAdress: string;
-  username: string;
-  address: string;       //iP address of the client
-  timeToLive: number;    // timestamp (ms since epoch)
-}
-const connectedClients: ClientConnection[] = [
-    {
-        connectedToSupernodeAdress: config.url,
-        username: `user of ${config.name}`,
-        address: 'localhost',
-        timeToLive: 60000
-    }
-]
+const stateManager = new StateManager();
+
+// Mock client connection
+const mockClient: ClientConnection = {
+    supernodeAddress: config.url,
+    username: `mockuser_${config.name}`,
+    address: `address_${config.name}`,
+    timeToLive: Date.now() + 60000
+};
+stateManager.updateClients([mockClient]);
 
 const GET_KNOWN_CLIENTS: string = "GET_KNOWN_CLIENTS"
 const RESPONSE_GET_KNOWN_CLIENTS: string = "RESPONSE_GET_KNOWN_CLIENTS"
 
-type Message = {
-    type: string,
-    body: ClientConnection[] | null,
-}
+
 
 //this is run whenn the supernode gets the GET_KNOWN_CLIENTS message
 const handleRespondToGetKnownClients = (ws, req, parsedMessage) => {

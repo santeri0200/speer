@@ -16,6 +16,7 @@ export class StateManager {
         }));
     }
 
+    //This is for supernode communication
     updateRemoteClients(clients: ClientConnection[]): void {
         clients.forEach(client => {
             if (client.supernodeAddress !== config.url){
@@ -31,6 +32,7 @@ export class StateManager {
         })
     }
 
+    //This is for Client communication
     updateDirectClient(client: Client): void {
         const existingIndex = this.connectedClients.findIndex(
             c => c.username === client.username

@@ -134,7 +134,7 @@ setInterval(async () => {
     await startClientAddressGossip()
     console.log(`--SERVER ${config.name} stopped gossip--`)
 }, randomBetween(5000, 10000))
-
-
-
-
+setInterval(async () => {
+    console.log("--Cleanup Expired Client Entries--")
+    stateManager.cleanupExpiredClients()
+}, 60000)

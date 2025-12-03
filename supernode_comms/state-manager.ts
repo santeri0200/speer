@@ -15,7 +15,7 @@ export class StateManager {
         }));
     }
 
-    updateClients(clients: ClientConnection[]): void {
+    updateRemoteClients(clients: ClientConnection[]): void {
         clients.forEach(client => {
             const existingIndex = this.connectedClients.findIndex(
                 c => c.username === client.username
@@ -28,6 +28,22 @@ export class StateManager {
         })
     }
 
+    updateDirectClient(client: Client): void {
+        const existingIndex = this.connectedClients.findIndex(
+            c => c.username === client.username
+        );
+        const clientConnection: ClientConnection = {
+            ...client,
+            supernodeAddress: config.url,
+            timeToLive: Date.now() + 60000 // 1 minute TTL
+        };
+        if (existingIndex !== -1) {
+            this.connectedClients[existingIndex] = clientConnection;
+        } else {
+            this.connectedClients.push(clientConnection);
+        }
+    }
+
     //This is for when a client informs the server that it is going offline
     removeClient(address: string): void {
         this.connectedClients = this.connectedClients.filter(
@@ -36,7 +52,7 @@ export class StateManager {
     }
 
     cleanupExpiredClients(): void {
-        const nowTTL = Date.now() - 60000; //remove all that are more than 60 secs old
+        const nowTTL = Date.now();
         const beforeCP = this.connectedClients.length
         this.connectedClients = this.connectedClients.filter(
             client => client.timeToLive > nowTTL

@@ -12,18 +12,16 @@ import {config, globalConfig} from './config/config.ts'
 import { WebSocketServer } from "ws";
 
 import { StateManager } from './state-manager.ts';
-import type { Message, ClientConnection } from './types.ts';
+import type { Message, Client, ClientConnection } from './types.ts';
 
 const stateManager = new StateManager();
 
 // Mock client connection
-const mockClient: ClientConnection = {
-    supernodeAddress: config.url,
+const mockClient: Client = {
     username: `mockuser_${config.name}`,
     address: `address_${config.name}`,
-    timeToLive: Date.now() + 60000
 };
-stateManager.updateClients([mockClient]);
+stateManager.updateDirectClient(mockClient);
 
 const GET_KNOWN_CLIENTS: string = "GET_KNOWN_CLIENTS"
 const RESPONSE_GET_KNOWN_CLIENTS: string = "RESPONSE_GET_KNOWN_CLIENTS"
@@ -41,7 +39,7 @@ const handleRespondToGetKnownClients = (ws, req, parsedMessage) => {
 }
 
 const handleSupernodeGossip = (clients: ClientConnection[]) => {
-    stateManager.updateClients(clients);
+    stateManager.updateRemoteClients(clients);
 }
 
 const wss = new WebSocketServer({ port: 8000 });

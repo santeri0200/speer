@@ -39,7 +39,7 @@ const handleRespondToGetKnownClients = (ws, req, parsedMessage) => {
     console.log(`${config.name} is sending client info to ${req.socket.remoteAddress}`)
     const response: Message = {
         type: RESPONSE_GET_KNOWN_CLIENTS,
-        body: connectedClients
+        body: stateManager.getConnectedClients()
     }
     ws.send(JSON.stringify(response))
 }

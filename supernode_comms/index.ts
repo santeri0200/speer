@@ -44,7 +44,10 @@ const handleRespondToGetKnownClients = (ws, req, parsedMessage) => {
     ws.send(JSON.stringify(response))
 }
 
-//gossip response loop edit handleResponseToGetKnownClients if you want to decide what the server does when it gets the GET_KNOWN_CLIENTS 
+const handleSupernodeGossip = (clients: ClientConnection[]) => {
+    stateManager.updateClients(clients);
+}
+
 const wss = new WebSocketServer({ port: 8000 });
 wss.on("connection", (ws, req) => {
     console.log(`${config.name} was connected from ${req.socket.remoteAddress}`);
@@ -116,8 +119,11 @@ const startClientAddressGossip = async () => {
     await new Promise(resolve => setTimeout(resolve, randomBetween(0, 2000)));
     for(const server of globalConfig){
        createConnectionAndGossip(server, 3, 1000, (event, connection) => {
-            //TODO: stage management here
-            console.log(`${config.name} got client info ${event.data} from ${connection.url}`)
+           const parsedMessage = JSON.parse(event.data)
+           console.log(`${config.name} got client-info\n ${event.data} \nfrom ${connection.url}`)
+            if (parsedMessage['type'] == RESPONSE_GET_KNOWN_CLIENTS) {
+                handleSupernodeGossip(parsedMessage['body']);
+            }
        })
     }
 }

@@ -1,4 +1,4 @@
-import type {ClientConnection} from "./types"
+import type {Client, ClientConnection} from "./types"
 
 export class StateManager {
     private connectedClients: ClientConnection[] = [];
@@ -8,7 +8,7 @@ export class StateManager {
     }
 
     //Use this for sending clients a list of online users
-    getOnlineClients() {
+    getOnlineClients(): Client[] {
         return this.connectedClients.map(client => ({
             username: client.username,
             address: client.address

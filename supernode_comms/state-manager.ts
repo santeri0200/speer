@@ -1,3 +1,4 @@
+import {config} from './config/config.ts'
 import type {Client, ClientConnection} from "./types"
 
 export class StateManager {
@@ -17,13 +18,15 @@ export class StateManager {
 
     updateRemoteClients(clients: ClientConnection[]): void {
         clients.forEach(client => {
-            const existingIndex = this.connectedClients.findIndex(
-                c => c.username === client.username
-            );
-            if (existingIndex !== -1) {
-                this.connectedClients[existingIndex] = client;
-            } else {
-                this.connectedClients.push(client);
+            if (client.supernodeAddress !== config.url){
+                const existingIndex = this.connectedClients.findIndex(
+                    c => c.username === client.username
+                );
+                if (existingIndex !== -1) {
+                    this.connectedClients[existingIndex] = client;
+                } else {
+                    this.connectedClients.push(client);
+                }
             }
         })
     }

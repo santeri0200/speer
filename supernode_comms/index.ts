@@ -25,7 +25,8 @@ stateManager.updateDirectClient(mockClient);
 
 const GET_KNOWN_CLIENTS: string = "GET_KNOWN_CLIENTS"
 const RESPONSE_GET_KNOWN_CLIENTS: string = "RESPONSE_GET_KNOWN_CLIENTS"
-
+const CLIENT_TO_SUPERNODE_MESSAGE: string ="CLIENT_TO_SUPERNODE_MESSAGE"
+const SUPERNODE_TO_CLIENT_MESSAGE: string = "SUPERNODE_TO_CLIENT_MESSAGE"
 
 
 //this is run whenn the supernode gets the GET_KNOWN_CLIENTS message
@@ -50,6 +51,13 @@ wss.on("connection", (ws, req) => {
         const parsedMessage = JSON.parse(message)
         if(parsedMessage['type'] === GET_KNOWN_CLIENTS) {
             handleRespondToGetKnownClients(ws, req, parsedMessage)
+        }
+        if(parsedMessage['type'] === CLIENT_TO_SUPERNODE_MESSAGE) {
+            ws.send(JSON.stringify({
+                type: SUPERNODE_TO_CLIENT_MESSAGE,
+                body: parsedMessage.body,
+                from: config.name
+            }));
         }
     });
     ws.on("close", () => {

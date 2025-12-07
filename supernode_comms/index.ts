@@ -53,9 +53,14 @@ wss.on("connection", (ws, req) => {
             handleRespondToGetKnownClients(ws, req, parsedMessage)
         }
         if(parsedMessage['type'] === CLIENT_TO_SUPERNODE_MESSAGE) {
+            const newClient: Client = {
+                username: parsedMessage['body'].username,
+                address: `${req.socket.remoteAddress}:${req.socket.remotePort}`,
+            };
+            stateManager.updateDirectClient(newClient)
             ws.send(JSON.stringify({
                 type: SUPERNODE_TO_CLIENT_MESSAGE,
-                body: parsedMessage.body,
+                body: stateManager.getOnlineClients(),
                 from: config.name
             }));
         }

@@ -60,6 +60,10 @@ const App: React.FC = () => {
         ws?.close()
     };
 
+    const handleCall = (username: string, address: string) => {
+        console.log(`Init call to ${username} at ${address}`)
+    }
+
     return (
         <div style={{ padding: '20px' }}>
             <h1>SPEER</h1>
@@ -93,7 +97,7 @@ const App: React.FC = () => {
                             <div>
                                 {state.map((client, index) => (
                                     <div key={index}>
-                                        <button style={{width: '100%', margin:'1px'}}>{client.username}</button>
+                                        <button onClick={() => handleCall(client.username, client.address)} style={{width: '100%', margin:'1px'}}>{client.username}</button>
                                     </div>
                                 ))}
                             </div>

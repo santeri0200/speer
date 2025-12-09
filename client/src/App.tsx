@@ -8,6 +8,8 @@ const App: React.FC = () => {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [username, setUsername] = useState<string>('');
   const [connected, setConnected] = useState<boolean>(false);
+  const [intervalId, setIntervalId] = useState<number>(-1);
+
   const localStream = useRef<MediaStream | null>(null);
   const remoteVideo = useRef<HTMLVideoElement>(null);
   const localVideo = useRef<HTMLVideoElement>(null);
@@ -77,6 +79,22 @@ const App: React.FC = () => {
           body: { username, offer: connection.localDescription },
         })
       );
+
+      const interval = setInterval(() => {
+        if (websocket.readyState === WebSocket.OPEN) {
+          const payload = {
+            type: 'CLIENT_TO_SUPERNODE_MESSAGE',
+            body: {
+              timestamp: new Date().toISOString(),
+              username: username,
+            }
+          }
+
+          websocket.send(JSON.stringify(payload))
+        }
+      }, 1000)
+
+      setIntervalId(interval)
     };
 
     websocket.onmessage = (event) => {
@@ -93,6 +111,11 @@ const App: React.FC = () => {
     websocket.onclose = () => {
       setConnected(false);
       setClients([]);
+
+      if (intervalId !== -1) {
+        clearInterval(intervalId)
+        setIntervalId(-1)
+      }
     };
 
     websocket.onerror = (error) => console.error('WebSocket error:', error);

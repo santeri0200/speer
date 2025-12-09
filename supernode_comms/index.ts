@@ -17,11 +17,12 @@ import type { Message, Client, ClientConnection } from './types.ts';
 const stateManager = new StateManager();
 
 // Mock client connection
-const mockClient: Client = {
+const mockClient: Omit<Client, 'ws'> = {
     username: `mockuser_${config.name}`,
     address: `address_${config.name}`,
+    offer: '',
 };
-stateManager.updateDirectClient(mockClient);
+stateManager.updateDirectClient(mockClient as Client);
 
 const GET_KNOWN_CLIENTS: string = "GET_KNOWN_CLIENTS"
 const RESPONSE_GET_KNOWN_CLIENTS: string = "RESPONSE_GET_KNOWN_CLIENTS"

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-type Client = { address: string; username: string; offer?: RTCSessionDescriptionInit };
+type Client = { address: string; username: string; offer: RTCSessionDescriptionInit };
 
 const App: React.FC = () => {
   const connection = new RTCPeerConnection();
@@ -73,13 +73,6 @@ const App: React.FC = () => {
       const offer = await connection.createOffer();
       await connection.setLocalDescription(offer);
 
-      websocket.send(
-        JSON.stringify({
-          type: 'CLIENT_TO_SUPERNODE_MESSAGE',
-          body: { username, offer: connection.localDescription },
-        })
-      );
-
       const interval = setInterval(() => {
         if (websocket.readyState === WebSocket.OPEN) {
           const payload = {
@@ -87,6 +80,7 @@ const App: React.FC = () => {
             body: {
               timestamp: new Date().toISOString(),
               username: username,
+              offer: connection.localDescription,
             }
           }
 
@@ -133,7 +127,7 @@ const App: React.FC = () => {
   }
 
   const handleCall = async (client: Client) => {
-    const desc = new RTCSessionDescription(client.offer!);
+    const desc = new RTCSessionDescription(client.offer);
     await connection.setRemoteDescription(desc);
 
     const answer = await connection.createAnswer();

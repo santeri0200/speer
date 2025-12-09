@@ -11,6 +11,8 @@ export type Message = {
 export type Client = {
     username: string;           // Client username
     address: string;            // Client IP address
+    offer: string;              // Client WebRTC offer
+    ws: WebSocket;
 }
 
 export interface ClientConnection {

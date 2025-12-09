@@ -1,7 +1,7 @@
 services:
   server-0:
     build:
-      context: ./server
+      context: ./supernode_comms
       dockerfile: Containerfile
     container_name: speer-server-0
     environment:
@@ -11,7 +11,7 @@ services:
     restart: "no"
   server-1:
     build:
-      context: ./server
+      context: ./supernode_comms
       dockerfile: Containerfile
     container_name: speer-server-1
     environment:
@@ -21,7 +21,7 @@ services:
     restart: "no"
   server-2:
     build:
-      context: ./server
+      context: ./supernode_comms
       dockerfile: Containerfile
     container_name: speer-server-2
     environment:
@@ -29,4 +29,22 @@ services:
     ports:
       - "8002:8000"
     restart: "no"
-
+  client-0:
+    build:
+      context: ./client
+      dockerfile: Containerfile
+    container_name: speer-client-0
+    ports:
+      - "3000:3000" # video listening?
+      - "5173:5173" # web ui for using this client
+    restart: "no"
+  client-1:
+    build:
+      context: ./client
+      dockerfile: Containerfile
+    container_name: speer-client-1
+    ports:
+      - "3001:3000"
+      - "5174:5173" # web ui
+    restart: "no"
+ 

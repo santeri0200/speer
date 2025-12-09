@@ -104,7 +104,7 @@ const createConnectionAndGossip = async (server, attempts, responseWaitTimeMs, o
         try{
             const connection = new WebSocket(server.url)
             connection.onopen = () => {
-                // console.log(`${config.name} asking client info from ${connection.url}`)
+                console.log(`${config.name} asking client info from ${connection.url}`)
                 const message = {
                     type: GET_KNOWN_CLIENTS,
                     body: null
@@ -126,7 +126,7 @@ const createConnectionAndGossip = async (server, attempts, responseWaitTimeMs, o
                 break;
             }
         }catch(e){
-            // console.log(`${config.name} failed to connect ${server.url}`)
+            console.log(`${config.name} failed to connect ${server.url}`)
         }
     }
 }
@@ -136,7 +136,7 @@ const startClientAddressGossip = async () => {
     for(const server of globalConfig){
        createConnectionAndGossip(server, 3, 1000, (event, connection) => {
            const parsedMessage = JSON.parse(event.data)
-           // console.log(`${config.name} got client-info\n ${event.data} \nfrom ${connection.url}`)
+           console.log(`${config.name} got client-info\n ${event.data} \nfrom ${connection.url}`)
             if (parsedMessage['type'] == RESPONSE_GET_KNOWN_CLIENTS) {
                 handleSupernodeGossip(parsedMessage['body']);
             }
@@ -144,12 +144,8 @@ const startClientAddressGossip = async () => {
     }
 }
 
+setInterval(async () => await startClientAddressGossip(), randomBetween(5000, 10000))
 setInterval(async () => {
-    // console.log(`--SERVER ${config.name} starting gossip--`)
-    await startClientAddressGossip()
-    // console.log(`--SERVER ${config.name} stopped gossip--`)
-}, randomBetween(5000, 10000))
-setInterval(async () => {
-    // console.log("--Cleanup Expired Client Entries--")
+    console.log("--Cleanup Expired Client Entries--")
     stateManager.cleanupExpiredClients()
-}, 60000)
+}, 1000)

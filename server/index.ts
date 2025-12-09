@@ -12,7 +12,7 @@ const generateMessage = () => {
         "Have a great day!",
         "Stay safe!",
         `hello from ${config.name}`,
-        "stop"
+        // "stop"
     ];
     const index = Math.floor(Math.random() * messages.length);
     return messages[index];
@@ -56,7 +56,7 @@ const talk =  async (run: boolean) => {
         };
 
         socket.onmessage = (event) => {
-            const data =JSON.parse(event.data);
+            const data = JSON.parse(event.data);
             console.log("Supernode replied:", data);
         };
         

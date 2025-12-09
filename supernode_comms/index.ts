@@ -39,15 +39,28 @@ const handleRespondToGetKnownClients = (ws, req, parsedMessage) => {
     ws.send(JSON.stringify(response))
 }
 
+const sendAnswerToClient = (ws, req, parsedMessage) => {
+    // console.log(parsedMessage)
+    const clients = stateManager.getConnectedClients()
+    const target = clients.find(({ address }) => address == parsedMessage.body.address)
+    if (!target) return
+
+    const response: Message = {
+        type: 'ANSWER',
+        body: parsedMessage.body.answer,
+    }
+    target.ws.send(JSON.stringify(response))
+}
+
 const handleSupernodeGossip = (clients: ClientConnection[]) => {
     stateManager.updateRemoteClients(clients);
 }
 
 const wss = new WebSocketServer({ port: 8000 });
 wss.on("connection", (ws, req) => {
-    console.log(`${config.name} was connected from ${req.socket.remoteAddress}`);
+    // console.log(`${config.name} was connected from ${req.socket.remoteAddress}`);
     ws.on("message", (message) => {
-        console.log(`Received: ${message}`);
+        // console.log(`Received: ${message}`);
         const parsedMessage = JSON.parse(message)
         if(parsedMessage['type'] === GET_KNOWN_CLIENTS) {
             handleRespondToGetKnownClients(ws, req, parsedMessage)
@@ -56,6 +69,8 @@ wss.on("connection", (ws, req) => {
             const newClient: Client = {
                 username: parsedMessage['body'].username,
                 address: `${req.socket.remoteAddress}:${req.socket.remotePort}`,
+                offer: parsedMessage['body'].offer,
+                ws,
             };
             stateManager.updateDirectClient(newClient)
             ws.send(JSON.stringify({
@@ -63,6 +78,9 @@ wss.on("connection", (ws, req) => {
                 body: stateManager.getOnlineClients(),
                 from: config.name
             }));
+        }
+        if(parsedMessage['type'] === "ANSWER") {
+            sendAnswerToClient(ws, req, parsedMessage)
         }
     });
     ws.on("close", () => {
@@ -78,14 +96,14 @@ const createConnectionAndGossip = async (server, attempts, responseWaitTimeMs, o
     let response = false
     for(let i = 0; i < attempts; i += 1){
         if(server.name == config.name || server.name == 'error'){
-            console.log(`${config.name} skipped  ${server.name}`)
+            // console.log(`${config.name} skipped  ${server.name}`)
             continue;
         }
-        console.log(`${config.name} attempting to connect to ${server.name}`)
+        // console.log(`${config.name} attempting to connect to ${server.name}`)
         try{
             const connection = new WebSocket(server.url)
             connection.onopen = () => {
-                console.log(`${config.name} asking client info from ${connection.url}`)
+                // console.log(`${config.name} asking client info from ${connection.url}`)
                 const message = {
                     type: GET_KNOWN_CLIENTS,
                     body: null
@@ -107,7 +125,7 @@ const createConnectionAndGossip = async (server, attempts, responseWaitTimeMs, o
                 break;
             }
         }catch(e){
-            console.log(`${config.name} failed to connect ${server.url}`)
+            // console.log(`${config.name} failed to connect ${server.url}`)
         }
     }
 }
@@ -117,7 +135,7 @@ const startClientAddressGossip = async () => {
     for(const server of globalConfig){
        createConnectionAndGossip(server, 3, 1000, (event, connection) => {
            const parsedMessage = JSON.parse(event.data)
-           console.log(`${config.name} got client-info\n ${event.data} \nfrom ${connection.url}`)
+           // console.log(`${config.name} got client-info\n ${event.data} \nfrom ${connection.url}`)
             if (parsedMessage['type'] == RESPONSE_GET_KNOWN_CLIENTS) {
                 handleSupernodeGossip(parsedMessage['body']);
             }
@@ -126,11 +144,11 @@ const startClientAddressGossip = async () => {
 }
 
 setInterval(async () => {
-    console.log(`--SERVER ${config.name} starting gossip--`)
+    // console.log(`--SERVER ${config.name} starting gossip--`)
     await startClientAddressGossip()
-    console.log(`--SERVER ${config.name} stopped gossip--`)
+    // console.log(`--SERVER ${config.name} stopped gossip--`)
 }, randomBetween(5000, 10000))
 setInterval(async () => {
-    console.log("--Cleanup Expired Client Entries--")
+    // console.log("--Cleanup Expired Client Entries--")
     stateManager.cleanupExpiredClients()
 }, 60000)

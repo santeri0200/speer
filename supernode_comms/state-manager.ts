@@ -12,7 +12,8 @@ export class StateManager {
     getOnlineClients(): Client[] {
         return this.connectedClients.map(client => ({
             username: client.username,
-            address: client.address
+            address: client.address,
+            offer: client.offer,
         }));
     }
 

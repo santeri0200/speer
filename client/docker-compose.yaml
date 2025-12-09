@@ -5,8 +5,8 @@ services:
       dockerfile: Containerfile
     container_name: speer-client-0
     ports:
-      - "3000:3000"
-      - "5173:5173"
+      - "3000:3000" # video listening?
+      - "5173:5173" # web ui for using this client
     restart: "no"
   client-1:
     build:
@@ -15,6 +15,6 @@ services:
     container_name: speer-client-1
     ports:
       - "3001:3000"
-      - "5174:5173"
+      - "5174:5173" # web ui
     restart: "no"
  

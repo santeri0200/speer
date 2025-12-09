@@ -14,12 +14,7 @@ const App: React.FC = () => {
   const remoteVideo = useRef<HTMLVideoElement>(null);
   const localVideo = useRef<HTMLVideoElement>(null);
 
-  connection.onicecandidate = console.log
-  connection.oniceconnectionstatechange = console.log
-  connection.onicegatheringstatechange = console.log
-  connection.onsignalingstatechange = console.log
-  connection.onnegotiationneeded = console.log
-  connection.ontrack = console.log
+  connection.addEventListener("track", e => remoteVideo.current!.srcObject = e.streams[0])
 
   connection.onicecandidate = (event) => {
     if (event.candidate && ws) {

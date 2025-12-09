@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 
 type Client = { address: string; username: string; offer: RTCSessionDescriptionInit };
 
@@ -15,31 +15,6 @@ const App: React.FC = () => {
   const localVideo = useRef<HTMLVideoElement>(null);
 
   connection.addEventListener("track", e => remoteVideo.current!.srcObject = e.streams[0])
-
-  connection.onicecandidate = (event) => {
-    if (event.candidate && ws) {
-      ws.send(
-        JSON.stringify({
-          type: 'ICE_CANDIDATE',
-          body: { candidate: event.candidate },
-        })
-      );
-    }
-  };
-
-
-  useEffect(() => {
-    connection.ontrack = (event) => {
-      if (remoteVideo.current) {
-        remoteVideo.current.srcObject = event.streams[0];
-      }
-    };
-
-    return () => {
-      connection.close();
-      ws?.close();
-    };
-  }, [ws]);
 
   const initializeCamera = async () => {
     try {
@@ -92,8 +67,6 @@ const App: React.FC = () => {
         setClients(message.body);
       } else if (message.type === 'ANSWER') {
         handleIncomingAnswer(message.body);
-      } else if (message.type === 'ICECANDIDATE') {
-        handleIceCandidate(message.body)
       }
     };
 
@@ -116,10 +89,6 @@ const App: React.FC = () => {
     const desc = new RTCSessionDescription(answer);
     await connection.setRemoteDescription(desc);
   };
-
-  const handleIceCandidate = async (candidate: RTCIceCandidate) => {
-    await connection.addIceCandidate(candidate)    
-  }
 
   const handleCall = async (client: Client) => {
     const desc = new RTCSessionDescription(client.offer);

@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 type Client = { address: string; username: string; offer: RTCSessionDescriptionInit };
 
 const App: React.FC = () => {
+  const [adress, setAdress] = useState('')
   const connection = new RTCPeerConnection();
   const [clients, setClients] = useState<Client[]>([]);
   const [ws, setWs] = useState<WebSocket | null>(null);
@@ -36,8 +37,7 @@ const App: React.FC = () => {
     if (!username.trim()) return;
 
     await initializeCamera();
-
-    const websocket = new WebSocket('ws://localhost:8000');
+    const websocket = new WebSocket(adress);
     websocket.onopen = async () => {
       setConnected(true);
       const offer = await connection.createOffer();
@@ -126,6 +126,13 @@ const App: React.FC = () => {
 
       {!connected ? (
         <div>
+           <input
+            id="adress"
+            type="text"
+            value={adress}
+            onChange={(e) => setAdress(e.target.value)}
+            placeholder="Enter supernode adress"
+          />
           <label htmlFor="username">Username: </label>
           <input
             id="username"

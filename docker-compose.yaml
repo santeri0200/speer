@@ -30,6 +30,8 @@ services:
       - "8002:8000"
     restart: "no"
   client-0:
+    environment:
+        SUPERNODE_URL: 'ws://localhost:8000'
     build:
       context: ./client
       dockerfile: Containerfile
@@ -39,6 +41,8 @@ services:
       - "5173:5173" # web ui for using this client
     restart: "no"
   client-1:
+    environment:
+        SUPERNODE_URL: 'ws://localhost:8001'
     build:
       context: ./client
       dockerfile: Containerfile
